@@ -4,164 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="css.css"></link>
 </head>
 <body>
-
-    <button id="paper">Paper</button>
-    <button id="rock">Rock</button>
-    <button id="scissors">Scissors</button>
-
-    <div id="humanChoiceText"></div>
-    <div id="computerChoiceText"></div>
-    <div id="resultText"></div>
-    <div id="scoreText"></div>
-    <div id="gameResult"></div>
-    <br>
-    <div id="humanTotalScoreText">Human total score: 0</div>
-    <div id="computerTotalScoreText">Computer total score: 0</div>
-
-    <button style="display: none;" id="playAgain">Play again?</button>
+    Enter sketchpad resolution:
+    <input id="resolution"></input>
+    <button id="resSubmit">Create</button>
 
     <script>
 
-let humanChoiceText = document.getElementById('humanChoiceText');
-let computerChoiceText = document.getElementById('computerChoiceText');
-let roundResultText = document.getElementById('resultText');
-let scoreText = document.getElementById('scoreText');
-let gameResultText = document.getElementById('gameResult');
-let playAgainButton = document.getElementById('playAgain');
-let humanTotalScoreText = document.getElementById('humanTotalScoreText');
-let computerTotalScoreText = document.getElementById('computerTotalScoreText');
+        const gridContainer = document.createElement('div');
+        const resolution = document.getElementById('resolution');
+        const resSubmit = document.getElementById('resSubmit');
 
+        gridContainer.id = 'gridContainer';
 
-function computerChoice() {
-    choices = ['rock', 'paper', 'scissors'];
-    let randomIndex = Math.floor(Math.random() * 3);
-    return choices[randomIndex];
-}
+        document.body.appendChild(gridContainer);
 
+        containerSize = 800;
 
-let computerScore = 0;
-let humanScore = 0;
-let rounds = 0;
-let humanTotalScore = 0;
-let computerTotalScore = 0;
+        gridContainer.style.width = (containerSize + 'px');
+        gridContainer.style.height = (containerSize + 'px');
 
-function humanWins(){
-    gameResultText.textContent = "You win the game!";
-    roundResultText.textContent = '';
-    humanTotalScore++;
-}
+        function colorChange(e){
+                        e.target.style.backgroundColor = 'black';
+                        let currentOpacity = parseFloat(e.target.style.opacity) || 0;
+                        if (currentOpacity < 1){
+                            e.target.style.opacity = (currentOpacity + 0.1).toString()
+                        }
+        }
 
-function computerWins(){
-    gameResultText.textContent = "You lose the game!";
-    roundResultText.textContent = '';
-    computerTotalScore++;
-}
+        isMouseDown = false;
 
-function drawGame(){
-    gameResultText.textContent = "The game is drawed!";
-    roundResultText.textContent = '';
-}
+        function updateGrid(){
+            let gridSize = resolution.value;
+            let totalCells = gridSize * gridSize;
 
-function playRound(humanSelection){
-    
-    const computerSelection = computerChoice();
+            gridContainer.innerHTML = '';
 
-    humanChoiceText.textContent = 'Human choice: ' + humanSelection;
-    computerChoiceText.textContent = 'Computer choice: ' + computerSelection;
+            for (i=0; i<=totalCells-1; i++){
 
-    if(humanSelection === computerSelection){
-        roundResultText.textContent = "It's a draw!";
-    } else if(humanSelection === 'rock' && computerSelection === 'scissors'){
-        roundResultText.textContent = 'You win!';
-        humanScore++;
-    } else if(humanSelection === 'rock' && computerSelection === 'paper'){
-        roundResultText.textContent = 'You lose!';
-        computerScore++;
-    } else if(humanSelection === 'paper' && computerSelection === 'rock'){
-        roundResultText.textContent = 'You win!';
-        humanScore++;
-    } else if(humanSelection === 'paper' && computerSelection === 'scissors'){
-        roundResultText.textContent = 'You lose!';
-        computerScore++;
-    } else if(humanSelection === 'scissors' && computerSelection === 'paper'){
-        roundResultText.textContent = 'You win!';
-        humanScore++;
-    } else if(humanSelection === 'scissors' && computerSelection === 'rock'){
-        roundResultText.textContent = 'You lose!';
-        computerScore++;
-    }
+                const gridDiv = document.createElement('div');
 
-    scoreText.textContent = '';
+                gridDiv.className = 'gridDiv';
+                gridDiv.id = 'gridDiv' + i;
 
-    const computerScoreText = document.createTextNode('Computer score: ' + computerScore);
-    const humanScoreText = document.createTextNode('Human score: ' + humanScore);
-    const lineBreak = document.createElement('br');
+                gridContainer.appendChild(gridDiv);
 
-    scoreText.appendChild(computerScoreText);
-    scoreText.appendChild(lineBreak);
-    scoreText.appendChild(humanScoreText);
+                gridDiv.style.height = ((containerSize / gridSize) + 'px');
+                gridDiv.style.width = ((containerSize / gridSize) + 'px');
 
-    rounds++;
+                gridDiv.addEventListener('mousedown', function(e){
+                    isMouseDown = true;
+                        colorChange(e);
+                })
 
-    if (rounds === 5) {
-        if (humanScore === computerScore){
-                drawGame();
-            } else if (humanScore > computerScore){
-                humanWins();
-            } else if (humanScore < computerScore){ 
-                computerWins();     
-            } else {
-                gameResultText.textContent = '';
+                gridDiv.addEventListener('mouseover', function(e) {
+                    if (isMouseDown) {
+                        colorChange(e);
+                    }
+                });
+
+                gridDiv.addEventListener('mouseup', function() {
+                    isMouseDown = false;
+                });
+
             }
-
-        document.getElementById('paper').style.display = 'none';
-        document.getElementById('rock').style.display = 'none';
-        document.getElementById('scissors').style.display = 'none';
-
-        playAgainButton.style.display = 'block';
-
-        humanTotalScoreText.textContent = 'Human total score: ' + humanTotalScore;
-        computerTotalScoreText.textContent = 'Computer total score: ' + computerTotalScore;
-    }
+        }
 
 
-}
+        resSubmit.addEventListener('click', () => {
+            updateGrid();
+        });
 
-function playGame(){
+        resolution.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter'){
+                resSubmit.click();
+            }
+        })
 
-    let paperButton = document.getElementById('paper');
-    let rockButton = document.getElementById('rock');
-    let scissorsButton = document.getElementById('scissors');
-
-    paperButton.addEventListener('click', () => {
-        playRound('paper');
-    });
-
-    rockButton.addEventListener('click', () => {
-        playRound('rock');
-    });
-
-    scissorsButton.addEventListener('click', () =>{
-        playRound('scissors');
-    });
-
-    playAgainButton.addEventListener('click', () => {
-        document.getElementById('paper').style.display = 'inline';
-        document.getElementById('rock').style.display = 'inline';
-        document.getElementById('scissors').style.display = 'inline';
-        playAgainButton.style.display = 'none';
-        humanScore = 0;
-        computerScore = 0;
-        rounds = 0;
-        scoreText.textContent = '';
-        gameResultText.textContent = '';
-    });
-    
-}
-
-playGame();
 
     </script>
 </body>

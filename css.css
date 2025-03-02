@@ -1,0 +1,17 @@
+#gridContainer {
+    padding: 10px;
+    margin: 10px;
+    background-color: red;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+
+
+#gridContainer div {
+
+    background-color: blue;
+    transition: background-color 1.25s;
+}
