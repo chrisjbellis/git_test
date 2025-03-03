@@ -7,15 +7,25 @@
     <link rel="stylesheet" href="css.css"></link>
 </head>
 <body>
-    Enter sketchpad resolution:
+    Single number for sketchpad resolution:
     <input id="resolution"></input>
     <button id="resSubmit">Create</button>
+    <br>
+    Choose pen colour:
+    <select id="penColor">
+        <option value="black">Black</option>
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+        <option value="green">Green</option>
+        <option value="yellow">Yellow</option>
+    </select>
 
     <script>
 
         const gridContainer = document.createElement('div');
         const resolution = document.getElementById('resolution');
         const resSubmit = document.getElementById('resSubmit');
+        const penColor = document.getElementById('penColor');
 
         gridContainer.id = 'gridContainer';
 
@@ -27,54 +37,61 @@
         gridContainer.style.height = (containerSize + 'px');
 
         function colorChange(e){
-                        e.target.style.backgroundColor = 'black';
+                        e.target.style.backgroundColor = penColor.value;
                         let currentOpacity = parseFloat(e.target.style.opacity) || 0;
                         if (currentOpacity < 1){
-                            e.target.style.opacity = (currentOpacity + 0.1).toString()
+                            e.target.style.opacity = (currentOpacity + 0.2).toString()
                         }
         }
 
         isMouseDown = false;
 
         function updateGrid(){
-            let gridSize = resolution.value;
-            let totalCells = gridSize * gridSize;
+            let gridSize = resolution.value || 20;
+            if (gridSize > 100){
+                alert("Too big! Resolution must be smaller than 100");
+            } else {
 
-            gridContainer.innerHTML = '';
+                let totalCells = gridSize * gridSize;
 
-            for (i=0; i<=totalCells-1; i++){
+                gridContainer.innerHTML = '';
 
-                const gridDiv = document.createElement('div');
+                for (i=0; i<=totalCells-1; i++){
 
-                gridDiv.className = 'gridDiv';
-                gridDiv.id = 'gridDiv' + i;
+                    const gridDiv = document.createElement('div');
 
-                gridContainer.appendChild(gridDiv);
+                    gridDiv.className = 'gridDiv';
+                    gridDiv.id = 'gridDiv' + i;
 
-                gridDiv.style.height = ((containerSize / gridSize) + 'px');
-                gridDiv.style.width = ((containerSize / gridSize) + 'px');
+                    gridContainer.appendChild(gridDiv);
 
-                gridDiv.addEventListener('mousedown', function(e){
-                    isMouseDown = true;
-                        colorChange(e);
-                })
+                    gridDiv.style.height = ((containerSize / gridSize) + 'px');
+                    gridDiv.style.width = ((containerSize / gridSize) + 'px');
 
-                gridDiv.addEventListener('mouseover', function(e) {
-                    if (isMouseDown) {
-                        colorChange(e);
+                    gridDiv.addEventListener('mousedown', function(e){
+                        isMouseDown = true;
+                            colorChange(e);
+                    })
+
+                    gridDiv.addEventListener('mouseover', function(e) {
+                        if (isMouseDown) {
+                            colorChange(e);
+                        }
+                    });
+
+                    gridDiv.addEventListener('mouseup', function() {
+                        isMouseDown = false;
+                    });
+
                     }
-                });
-
-                gridDiv.addEventListener('mouseup', function() {
-                    isMouseDown = false;
-                });
-
-            }
+                }
         }
 
 
         resSubmit.addEventListener('click', () => {
-            updateGrid();
+            
+                updateGrid();
+            
         });
 
         resolution.addEventListener('keydown', (e) => {
@@ -83,6 +100,7 @@
             }
         })
 
+        updateGrid();
 
     </script>
 </body>

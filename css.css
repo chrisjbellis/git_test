@@ -1,7 +1,7 @@
 #gridContainer {
     padding: 10px;
     margin: 10px;
-    background-color: red;
+    background-color: rgb(199, 199, 199);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -12,6 +12,6 @@
 
 #gridContainer div {
 
-    background-color: blue;
-    transition: background-color 1.25s;
+    background-color: none;
+    transition: background-color .5s;
 }
